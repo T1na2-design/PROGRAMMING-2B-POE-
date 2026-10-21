@@ -25,5 +25,9 @@
     <None Include=".github\workflows\ci.yml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 
 </Project>
