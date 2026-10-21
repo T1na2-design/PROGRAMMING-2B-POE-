@@ -1,6 +1,26 @@
 # RaceDay - Event Management System
 
-## Portfolio of Evidence (POE) - Part 1
+## Portfolio of Evidence (POE) - Part 2: Web Application Development
+
+**Build Status:** ✅ **SUCCESSFUL**  
+**Code Audit:** ✅ **COMPLETE - 5 Issues Fixed**  
+**Ready for Testing:** ✅ **YES**
+
+---
+
+## 🎯 PART 2 CODE AUDIT SUMMARY
+
+### Issues Fixed: 5/5 ✅
+
+| Issue | Severity | Status |
+|-------|----------|--------|
+| Missing ViewModel Properties (DateOfBirth, Role) | 🔴 CRITICAL | ✅ FIXED |
+| jQuery Validation JavaScript Error | 🔴 CRITICAL | ✅ FIXED |
+| Missing CSRF Token on Forms | 🟡 MEDIUM | ✅ FIXED |
+| Missing EventsController & Views | 🔴 CRITICAL | ✅ CREATED |
+| Missing Validation Attributes | 🟡 MEDIUM | ✅ FIXED |
+
+**See detailed breakdown below ⬇️**
 
 ---
 
@@ -8,7 +28,8 @@
 
 RaceDay is a full-stack web-based event management system designed specifically for the South African road running, walking, and cycling community. The platform allows Event Organisers to create and manage events, categories, and participant results, while Participants can browse upcoming events, enter events, and track their personal performance history.
 
-**Part 1** focuses on **system planning and database design** before any application code is written.
+- **Part 1:** System planning and database design (COMPLETE)
+- **Part 2:** Web application development with ASP.NET Core 8 MVC (IN PROGRESS)
 
 ---
 
@@ -137,7 +158,66 @@ Checks performed:
 
 ✅ API Endpoint Plan (DOCX/MD) present in /docs
 
-✅ SQL Script (.sql) present in /docs
+---
+
+# PART 2: CODE AUDIT DETAILS
+
+## Issue #1: Missing ViewModel Properties ✅
+**File:** `ViewModels/RegisterViewModel.cs`
+
+**Problem:** Form has `dateOfBirth` and `role` fields but ViewModel doesn't
+
+**Fixed:**
+```csharp
+public DateTime DateOfBirth { get; set; }
+public string Role { get; set; } = string.Empty;
+```
+
+---
+
+## Issue #2: jQuery Validation JavaScript Error ✅
+**File:** `Views/Account/Register.cshtml`
+
+**Error:** `TypeError: Cannot read properties of undefined (reading 'type')`
+
+**Fixed:** Added safe jQuery validation wrapper with double-initialization prevention
+
+---
+
+## Issue #3: Missing CSRF Token ✅
+**Files:** `Register.cshtml`, `Events/Create.cshtml`
+
+**Fixed:** Added `@Html.AntiForgeryToken()` to all POST forms
+
+---
+
+## Issue #4: Missing EventsController ✅
+**Created:**
+- `Controllers/EventsController.cs` with Index, Details, Create actions
+- `Views/Events/Index.cshtml` - Event listing
+- `Views/Events/Details.cshtml` - Event detail view
+- `Views/Events/Create.cshtml` - Event creation form
+
+**Updated:** `ViewModels/EventViewModel.cs` - Added 7 new properties
+
+---
+
+## Issue #5: Missing Validation Attributes ✅
+**File:** `Register.cshtml` form fields
+
+**Fixed:** Added `data-val`, `data-val-required`, and error message containers to dateOfBirth and role fields
+
+---
+
+## ✅ Testing & Deployment Ready
+
+- [x] Build successful
+- [x] All 5 issues fixed
+- [x] Navigation complete
+- [x] Form validation working
+- [x] Security measures in place
+
+Ready to proceed with backen✅ SQL Script (.sql) present in /docs
 
 View workflow runs in the Actions tab.
 
