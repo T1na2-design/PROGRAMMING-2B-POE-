@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using RaceDayMVC.ViewModels;
 
 namespace RaceDayMVC.Services
 {
@@ -48,6 +49,42 @@ namespace RaceDayMVC.Services
             {
                 // Log exception here if logging is configured
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Registers a new user via the API.
+        /// </summary>
+        public async Task<bool> RegisterAsync(RegisterViewModel model)
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
+                var registerRequest = new
+                {
+                    firstName = model.FirstName,
+                    lastName = model.LastName,
+                    email = model.Email,
+                    phoneNumber = model.PhoneNumber,
+                    idNumber = model.IDNumber,
+                    gender = model.Gender,
+                    password = model.Password,
+                    confirmPassword = model.ConfirmPassword
+                };
+
+                var content = new StringContent(
+                    JsonSerializer.Serialize(registerRequest),
+                    Encoding.UTF8,
+                    "application/json");
+
+                var response = await client.PostAsync($"{_apiBaseUrl}/api/auth/register", content);
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception)
+            {
+                // Log exception here if logging is configured
+                return false;
             }
         }
 

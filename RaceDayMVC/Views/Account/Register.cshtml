@@ -20,18 +20,16 @@
                     <p class="text-muted mb-0">Create your racing account</p>
                 </div>
 
-                <!-- Error Message -->
-                @if (!string.IsNullOrEmpty(Model?.ErrorMessage))
-                {
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="fas fa-exclamation-circle me-2"></i>
-                        @Model.ErrorMessage
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                }
+                <!-- Validation Summary -->
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none;">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <strong>Please fix the following errors:</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
 
                 <!-- Registration Form -->
                 <form method="post" action="/Account/Register" novalidate>
+                    @Html.AntiForgeryToken()
                     <!-- Name Row -->
                     <div class="row">
                         <div class="col-md-6">
@@ -85,6 +83,57 @@
                         <span asp-validation-for="Email" class="text-danger small d-block mt-1"></span>
                     </div>
 
+                    <!-- Phone Number -->
+                    <div class="mb-3">
+                        <label asp-for="PhoneNumber" class="form-label fw-600" style="color: #333;">Phone Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-phone" style="color: #667eea;"></i>
+                            </span>
+                            <input asp-for="PhoneNumber" 
+                                   type="text" 
+                                   class="form-control border-start-0 ps-2" 
+                                   placeholder="+1 (555) 000-0000"
+                                   required>
+                        </div>
+                        <span asp-validation-for="PhoneNumber" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <!-- ID Number -->
+                    <div class="mb-3">
+                        <label asp-for="IDNumber" class="form-label fw-600" style="color: #333;">ID Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-id-card" style="color: #667eea;"></i>
+                            </span>
+                            <input asp-for="IDNumber" 
+                                   type="text" 
+                                   class="form-control border-start-0 ps-2" 
+                                   placeholder="12345678"
+                                   required>
+                        </div>
+                        <span asp-validation-for="IDNumber" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="mb-3">
+                        <label asp-for="Gender" class="form-label fw-600" style="color: #333;">Gender</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-mars-and-venus" style="color: #667eea;"></i>
+                            </span>
+                            <select asp-for="Gender" 
+                                    class="form-select border-start-0 ps-2" 
+                                    required>
+                                <option value="">-- Select your gender --</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                                <option value="O">Other</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="Gender" class="text-danger small d-block mt-1"></span>
+                    </div>
+
                     <!-- Date of Birth -->
                     <div class="mb-3">
                         <label for="dateOfBirth" class="form-label fw-600" style="color: #333;">Date of Birth</label>
@@ -96,9 +145,12 @@
                                    id="dateOfBirth"
                                    name="dateOfBirth" 
                                    class="form-control border-start-0 ps-2" 
+                                   data-val="true"
+                                   data-val-required="Date of Birth is required."
                                    required>
                         </div>
                         <small class="text-muted d-block mt-1">Required to verify age eligibility</small>
+                        <span class="text-danger small d-block mt-1" data-valmsg-for="dateOfBirth" data-valmsg-replace="true"></span>
                     </div>
 
                     <!-- Role Selection -->
@@ -111,6 +163,8 @@
                             <select id="role" 
                                     name="role" 
                                     class="form-select border-start-0 ps-2" 
+                                    data-val="true"
+                                    data-val-required="Please select a role."
                                     required>
                                 <option value="">-- Select your role --</option>
                                 <option value="Participant">
@@ -125,6 +179,7 @@
                             <strong>Participant:</strong> Race in events • 
                             <strong>Organiser:</strong> Create and manage races
                         </small>
+                        <span class="text-danger small d-block mt-1" data-valmsg-for="role" data-valmsg-replace="true"></span>
                     </div>
 
                     <!-- Password -->
@@ -213,14 +268,41 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // Enhanced form validation
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const termsCheckbox = document.getElementById('terms');
-            if (!termsCheckbox.checked) {
-                e.preventDefault();
-                document.getElementById('termsError').style.display = 'block';
-                termsCheckbox.classList.add('is-invalid');
+        // Initialize validation with safeguards
+        $(function() {
+            // Prevent double-initialization
+            var validator = $('form').data('validator');
+            if (!validator) {
+                $('form').validate({
+                    ignore: [],
+                    errorClass: "is-invalid",
+                    validClass: "is-valid",
+                    highlight: function(element, errorClass, validClass) {
+                        $(element).closest('.input-group, .form-check').find("input, select, textarea").addClass(errorClass).removeClass(validClass);
+                    },
+                    unhighlight: function(element, errorClass, validClass) {
+                        $(element).closest('.input-group, .form-check').find("input, select, textarea").removeClass(errorClass).addClass(validClass);
+                    },
+                    errorPlacement: function(error, element) {
+                        var errorContainer = $('[data-valmsg-for="' + element.attr('name') + '"]');
+                        if (errorContainer.length) {
+                            errorContainer.html(error.html());
+                        } else {
+                            error.insertAfter(element.parent());
+                        }
+                    }
+                });
             }
+
+            // Handle Terms checkbox validation
+            $('form').on('submit', function(e) {
+                const termsCheckbox = $('#terms');
+                if (termsCheckbox.length && !termsCheckbox.is(':checked')) {
+                    e.preventDefault();
+                    $('#termsError').show();
+                    termsCheckbox.closest('.form-check').find('input').addClass('is-invalid');
+                }
+            });
         });
     </script>
 }

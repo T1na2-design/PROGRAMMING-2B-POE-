@@ -11,11 +11,11 @@ builder.Services.AddDistributedMemoryCache();
 // 2. REQUIRED FOR API SERVICE
 builder.Services.AddHttpContextAccessor();
 
-// 3. CONFIGURE HTTP CLIENT WITH YOUR API PORT (5001)
-builder.Services.AddHttpClient<ApiService>(client =>
-{
-    client.BaseAddress = new Uri("https://localhost:5001/");
-});
+// 3. REGISTER API SERVICE
+builder.Services.AddScoped<ApiService>();
+
+// 4. CONFIGURE HTTP CLIENT FACTORY
+builder.Services.AddHttpClient();
 
 // Configure Session management
 builder.Services.AddSession(options =>

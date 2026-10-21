@@ -1,0 +1,128 @@
+@model RaceDayMVC.ViewModels.EventViewModel
+
+@{
+    ViewData["Title"] = "Create Event - RaceDay";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-body p-5">
+                    <h1 class="card-title fw-bold mb-4">
+                        <i class="fas fa-plus me-2" style="color: #667eea;"></i>Create New Event
+                    </h1>
+
+                    <form method="post" action="/Events/Create" novalidate>
+                        @Html.AntiForgeryToken()
+
+                        <!-- Event Name -->
+                        <div class="mb-3">
+                            <label asp-for="EventName" class="form-label fw-600">Event Name</label>
+                            <input asp-for="EventName" 
+                                   type="text" 
+                                   class="form-control border-2" 
+                                   placeholder="Enter event name"
+                                   required>
+                            <span asp-validation-for="EventName" class="text-danger small d-block mt-1"></span>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-600">Description</label>
+                            <textarea asp-for="Description" 
+                                      class="form-control border-2" 
+                                      rows="4"
+                                      placeholder="Describe your event"
+                                      required></textarea>
+                            <span asp-validation-for="Description" class="text-danger small d-block mt-1"></span>
+                        </div>
+
+                        <div class="row">
+                            <!-- Event Date -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="EventDate" class="form-label fw-600">Event Date</label>
+                                    <input asp-for="EventDate" 
+                                           type="date" 
+                                           class="form-control border-2"
+                                           required>
+                                    <span asp-validation-for="EventDate" class="text-danger small d-block mt-1"></span>
+                                </div>
+                            </div>
+
+                            <!-- Race Type -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="RaceType" class="form-label fw-600">Race Type</label>
+                                    <select asp-for="RaceType" class="form-select border-2" required>
+                                        <option value="">-- Select race type --</option>
+                                        <option value="Road">Road Race</option>
+                                        <option value="Trail">Trail Race</option>
+                                        <option value="Track">Track Race</option>
+                                        <option value="Marathon">Marathon</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <span asp-validation-for="RaceType" class="text-danger small d-block mt-1"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Location -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Location" class="form-label fw-600">Location</label>
+                                    <input asp-for="Location" 
+                                           type="text" 
+                                           class="form-control border-2"
+                                           placeholder="Event location"
+                                           required>
+                                    <span asp-validation-for="Location" class="text-danger small d-block mt-1"></span>
+                                </div>
+                            </div>
+
+                            <!-- Distance -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Distance" class="form-label fw-600">Distance (km)</label>
+                                    <input asp-for="Distance" 
+                                           type="number" 
+                                           class="form-control border-2"
+                                           placeholder="0"
+                                           step="0.1"
+                                           required>
+                                    <span asp-validation-for="Distance" class="text-danger small d-block mt-1"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prize Pool -->
+                        <div class="mb-3">
+                            <label asp-for="PrizePool" class="form-label fw-600">Prize Pool</label>
+                            <input asp-for="PrizePool" 
+                                   type="text" 
+                                   class="form-control border-2"
+                                   placeholder="e.g., $5,000">
+                            <span asp-validation-for="PrizePool" class="text-danger small d-block mt-1"></span>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary flex-grow-1" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); border: none;">
+                                <i class="fas fa-save me-2"></i>Create Event
+                            </button>
+                            <a href="@Url.Action("Index")" class="btn btn-outline-secondary flex-grow-1">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
