@@ -1,8 +1,137 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Welcome to RaceDay";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Hero Section -->
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 80px 0; margin-bottom: 40px; border-radius: 10px; position: relative; overflow: hidden;">
+    <!-- Animated Background Pattern -->
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.1;">
+        <i class="fas fa-flag-checkered" style="font-size: 200px; color: white; position: absolute; top: -50px; right: -50px;"></i>
+    </div>
+
+    <div class="container position-relative z-1">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto text-center">
+                <!-- Main Heading -->
+                <h1 class="display-3 fw-bold text-white mb-3">
+                    <i class="fas fa-flag-checkered me-3"></i>Welcome to RaceDay
+                </h1>
+
+                <!-- Subheading -->
+                <p class="lead text-white mb-4" style="font-size: 1.3rem;">
+                    The ultimate platform for managing and joining sporting events.
+                </p>
+
+                <!-- Tagline -->
+                <p class="text-white-50 mb-5" style="font-size: 1.1rem;">
+                    <i class="fas fa-star me-2" style="color: #ffd93d;"></i>
+                    Organize races, connect athletes, celebrate achievements
+                </p>
+
+                <!-- Action Buttons -->
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="@Url.Action("Login", "Account")" class="btn btn-primary btn-lg fw-600 px-5" style="background: linear-gradient(90deg, #ff6b6b 0%, #ff8e72 100%); border: none; box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                    </a>
+                    <a href="@Url.Action("Register", "Account")" class="btn btn-light btn-lg fw-600 px-5" style="box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);">
+                        <i class="fas fa-user-plus me-2"></i>Create Account
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- API Status Section -->
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="alert alert-info alert-dismissible fade show" role="alert" style="border-left: 4px solid #667eea;">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-server me-3" style="font-size: 1.5rem; color: #667eea;"></i>
+                    <div>
+                        <strong>API Connection Status:</strong>
+                        <span id="apiStatus">@ViewBag.ApiTest</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h2 class="text-center mb-5 fw-bold" style="color: #333;">
+                Why Choose RaceDay?
+            </h2>
+
+            <div class="row">
+                <!-- Feature 1 -->
+                <div class="col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100" style="border-top: 4px solid #667eea;">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calendar-check mb-3" style="font-size: 2.5rem; color: #667eea;"></i>
+                            <h5 class="card-title fw-bold mb-2">Easy Event Management</h5>
+                            <p class="card-text text-muted">
+                                Create and manage sporting events with ease. Set rules, manage participants, and track results.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100" style="border-top: 4px solid #764ba2;">
+                        <div class="card-body text-center">
+                            <i class="fas fa-users mb-3" style="font-size: 2.5rem; color: #764ba2;"></i>
+                            <h5 class="card-title fw-bold mb-2">Connect with Athletes</h5>
+                            <p class="card-text text-muted">
+                                Find and join events that match your interests. Build a community of passionate racers.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100" style="border-top: 4px solid #6bcf7f;">
+                        <div class="card-body text-center">
+                            <i class="fas fa-trophy mb-3" style="font-size: 2.5rem; color: #6bcf7f;"></i>
+                            <h5 class="card-title fw-bold mb-2">Track Results</h5>
+                            <p class="card-text text-muted">
+                                Record race results, celebrate winners, and maintain historical records of all events.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100" style="border-top: 4px solid #ffd93d;">
+                        <div class="card-body text-center">
+                            <i class="fas fa-bolt mb-3" style="font-size: 2.5rem; color: #ffd93d;"></i>
+                            <h5 class="card-title fw-bold mb-2">Fast & Reliable</h5>
+                            <p class="card-text text-muted">
+                                Lightning-fast performance with secure data handling. Trusted by event organizers everywhere.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 60px 0; border-radius: 10px; margin-top: 40px;">
+    <div class="container text-center text-white">
+        <h3 class="mb-4 fw-bold">Ready to Join the Race?</h3>
+        <p class="mb-4 lead">Start organizing or participating in sporting events today.</p>
+        <a href="@Url.Action("Register", "Account")" class="btn btn-light btn-lg fw-600 px-5">
+            <i class="fas fa-rocket me-2"></i>Get Started Now
+        </a>
+    </div>
 </div>
