@@ -22,9 +22,7 @@ namespace RaceDayMVC.Controllers
         {
             try
             {
-                // TODO: Implement API call to fetch events
-                // var events = await _apiService.GetEventsAsync();
-                var events = new List<EventViewModel>();
+                var events = await _apiService.GetEventsAsync();
                 return View(events);
             }
             catch (Exception ex)
@@ -44,20 +42,19 @@ namespace RaceDayMVC.Controllers
 
             try
             {
-                // TODO: Implement API call to fetch event details
-                // var eventViewModel = await _apiService.GetEventAsync(id.Value);
-                var eventViewModel = new EventViewModel();
+                // Fetch event details from API
+                var eventDetails = await _apiService.GetEventDetailsAsync(id.Value);
 
-                if (eventViewModel == null)
+                if (eventDetails == null)
                 {
                     return NotFound();
                 }
 
-                return View(eventViewModel);
+                return View(eventDetails);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error fetching event details");
+                _logger.LogError(ex, $"Error fetching event details for ID {id}");
                 return NotFound();
             }
         }
@@ -66,8 +63,9 @@ namespace RaceDayMVC.Controllers
         public IActionResult Create()
         {
             // Check if user is authenticated and has organiser role
-            var userEmail = HttpContext.Session.GetString("userEmail");
-            if (string.IsNullOrEmpty(userEmail))
+            var userRole = HttpContext.Session.GetString("userRole");
+
+            if (string.IsNullOrEmpty(userRole) || !userRole.Equals("Organiser", StringComparison.OrdinalIgnoreCase))
             {
                 return RedirectToAction("Login", "Account");
             }
@@ -78,20 +76,29 @@ namespace RaceDayMVC.Controllers
         // POST: Events/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(EventViewModel model)
+        public async Task<IActionResult> Create(CreateEventViewModel model)
         {
+            // Check authorization
+            var userRole = HttpContext.Session.GetString("userRole");
+            if (string.IsNullOrEmpty(userRole) || !userRole.Equals("Organiser", StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // TODO: Implement API call to create event
-                    // var result = await _apiService.CreateEventAsync(model);
-                    // if (result)
-                    // {
-                    //     return RedirectToAction(nameof(Index));
-                    // }
+                    var result = await _apiService.CreateEventAsync(model);
 
-                    ModelState.AddModelError(string.Empty, "Failed to create event. Please try again.");
+                    if (result)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Failed to create event. Please try again.");
+                    }
                 }
                 catch (Exception ex)
                 {
