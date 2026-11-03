@@ -258,5 +258,201 @@ namespace RaceDayMVC.Services
                 return false;
             }
         }
+
+        /// <summary>
+        /// Enrolls a participant in an event category via the API.
+        /// </summary>
+        public async Task<bool> EnrolAsync(int categoryId, string? authToken = null)
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
+
+                // Create enrolment request
+                var enrolmentRequest = new { categoryId };
+
+                Console.WriteLine($"[API Request] Enrolling participant in category {categoryId}");
+                Console.WriteLine($"[API Request] Payload: {JsonSerializer.Serialize(enrolmentRequest)}");
+
+                var content = new StringContent(
+                    JsonSerializer.Serialize(enrolmentRequest),
+                    Encoding.UTF8,
+                    "application/json");
+
+                // Add authorization header if token exists
+                if (!string.IsNullOrEmpty(authToken))
+                {
+                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {authToken}");
+                }
+
+                var response = await client.PostAsync($"{_apiBaseUrl}/api/enrolments", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"[API Success] EnrolAsync succeeded with status code: {response.StatusCode}");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine($"[API Error] EnrolAsync failed with status code: {response.StatusCode}");
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"[API Error] Response: {errorContent}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Exception] EnrolAsync error: {ex.Message}");
+                Console.WriteLine($"[Exception] Stack trace: {ex.StackTrace}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the list of enrolments for the logged-in user.
+        /// </summary>
+        public async Task<List<EnrolmentViewModel>?> GetEnrolmentsAsync(string? authToken = null)
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
+
+                Console.WriteLine($"[API Request] Fetching enrolments from {_apiBaseUrl}/api/enrolments");
+
+                // Add authorization header if token exists
+                if (!string.IsNullOrEmpty(authToken))
+                {
+                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {authToken}");
+                }
+
+                var response = await client.GetAsync($"{_apiBaseUrl}/api/enrolments");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"[API Success] GetEnrolmentsAsync response: {content}");
+
+                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    var enrolments = JsonSerializer.Deserialize<List<EnrolmentViewModel>>(content, options);
+
+                    return enrolments ?? new List<EnrolmentViewModel>();
+                }
+                else
+                {
+                    Console.WriteLine($"[API Error] GetEnrolmentsAsync failed with status code: {response.StatusCode}");
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"[API Error] Response: {errorContent}");
+                    return new List<EnrolmentViewModel>();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Exception] GetEnrolmentsAsync error: {ex.Message}");
+                Console.WriteLine($"[Exception] Stack trace: {ex.StackTrace}");
+                return new List<EnrolmentViewModel>();
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the list of race results for the logged-in user.
+        /// </summary>
+        public async Task<List<ResultViewModel>?> GetResultsAsync(string? authToken = null)
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
+
+                Console.WriteLine($"[API Request] Fetching results from {_apiBaseUrl}/api/results");
+
+                // Add authorization header if token exists
+                if (!string.IsNullOrEmpty(authToken))
+                {
+                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {authToken}");
+                }
+
+                var response = await client.GetAsync($"{_apiBaseUrl}/api/results");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"[API Success] GetResultsAsync response: {content}");
+
+                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    var results = JsonSerializer.Deserialize<List<ResultViewModel>>(content, options);
+
+                    return results ?? new List<ResultViewModel>();
+                }
+                else
+                {
+                    Console.WriteLine($"[API Error] GetResultsAsync failed with status code: {response.StatusCode}");
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"[API Error] Response: {errorContent}");
+                    return new List<ResultViewModel>();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Exception] GetResultsAsync error: {ex.Message}");
+                Console.WriteLine($"[Exception] Stack trace: {ex.StackTrace}");
+                return new List<ResultViewModel>();
+            }
+        }
+
+        /// <summary>
+        /// Captures/submits a race result for a participant enrolment.
+        /// </summary>
+        public async Task<bool> CaptureResultAsync(CaptureResultViewModel model, string? authToken = null)
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
+
+                // Create result request
+                var resultRequest = new
+                {
+                    model.EnrolmentID,
+                    model.FinishTime,
+                    model.OverallPosition,
+                    model.GenderPosition,
+                    model.CategoryPosition,
+                    model.Pace
+                };
+
+                Console.WriteLine($"[API Request] Capturing result for enrolment {model.EnrolmentID}");
+                Console.WriteLine($"[API Request] Payload: {JsonSerializer.Serialize(resultRequest)}");
+
+                var content = new StringContent(
+                    JsonSerializer.Serialize(resultRequest),
+                    Encoding.UTF8,
+                    "application/json");
+
+                // Add authorization header if token exists
+                if (!string.IsNullOrEmpty(authToken))
+                {
+                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {authToken}");
+                }
+
+                var response = await client.PostAsync($"{_apiBaseUrl}/api/results", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"[API Success] CaptureResultAsync succeeded with status code: {response.StatusCode}");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine($"[API Error] CaptureResultAsync failed with status code: {response.StatusCode}");
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"[API Error] Response: {errorContent}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Exception] CaptureResultAsync error: {ex.Message}");
+                Console.WriteLine($"[Exception] Stack trace: {ex.StackTrace}");
+                return false;
+            }
+        }
     }
 }

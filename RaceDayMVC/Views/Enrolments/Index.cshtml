@@ -1,0 +1,246 @@
+@model List<RaceDayMVC.ViewModels.EnrolmentViewModel>
+
+@{
+    ViewData["Title"] = "My Enrolments - RaceDay";
+    var userRole = ViewBag.UserRole ?? "";
+    var isOrganiser = userRole?.Equals("Organiser", StringComparison.OrdinalIgnoreCase) ?? false;
+    var pageTitle = isOrganiser ? "Event Enrolments" : "My Enrolments";
+}
+
+<div class="enrolments-page">
+    <!-- Page Header -->
+    <div class="page-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 0; margin-bottom: 40px;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-12">
+                    <h1 class="display-5 fw-bold mb-2">
+                        <i class="fas fa-ticket-alt me-3"></i>@pageTitle
+                    </h1>
+                    <p class="lead mb-0 text-white-50">
+                        @(isOrganiser 
+                            ? "View and manage all enrolments for your events."
+                            : "Track your event enrolments and race participation status.")
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enrolments Section -->
+    <div class="container mb-5">
+        <div class="row">
+            <div class="col-12">
+                @if (Model != null && Model.Any())
+                {
+                    <!-- Enrolments Statistics Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title text-muted mb-2">Total Enrolments</h5>
+                                    <h2 class="text-primary fw-bold">@Model.Count</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title text-muted mb-2">Confirmed</h5>
+                                    <h2 class="text-success fw-bold">
+                                        @{
+                                            var confirmedCount = 0;
+                                            foreach (var e in Model)
+                                            {
+                                                if ((e.Status?.Equals("Confirmed", StringComparison.OrdinalIgnoreCase) ?? false) 
+                                                    || (e.Status?.Equals("Paid", StringComparison.OrdinalIgnoreCase) ?? false))
+                                                {
+                                                    confirmedCount++;
+                                                }
+                                            }
+                                        }
+                                        @confirmedCount
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title text-muted mb-2">Pending</h5>
+                                    <h2 class="text-warning fw-bold">
+                                        @Model.Count(e => e.Status?.Equals("Pending", StringComparison.OrdinalIgnoreCase) ?? false)
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title text-muted mb-2">Cancelled</h5>
+                                    <h2 class="text-danger fw-bold">
+                                        @Model.Count(e => e.Status?.Equals("Cancelled", StringComparison.OrdinalIgnoreCase) ?? false)
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Enrolments Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover border">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Bib Number</th>
+                                    <th>Event</th>
+                                    <th>Category</th>
+                                    <th>Enrolment Date</th>
+                                    <th>Status</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var enrolment in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(enrolment.BibNumber))
+                                            {
+                                                <span class="badge bg-dark fs-6">@enrolment.BibNumber</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">—</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <strong>@enrolment.EventTitle</strong>
+                                        </td>
+                                        <td>
+                                            @enrolment.CategoryName
+                                        </td>
+                                        <td>
+                                            <small>@enrolment.EnrolmentDate.ToString("dd MMM yyyy, HH:mm")</small>
+                                        </td>
+                                        <td>
+                                            @{
+                                                var statusClass = enrolment.Status switch
+                                                {
+                                                    "Confirmed" => "bg-success",
+                                                    "Paid" => "bg-success",
+                                                    "Pending" => "bg-warning text-dark",
+                                                    "Cancelled" => "bg-danger",
+                                                    _ => "bg-secondary"
+                                                };
+                                            }
+                                            <span class="badge @statusClass">@enrolment.Status</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="#" class="btn btn-sm btn-outline-primary" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            @if (isOrganiser)
+                                            {
+                                                @if ((enrolment.Status?.Equals("Paid", StringComparison.OrdinalIgnoreCase) ?? false) 
+                                                    || (enrolment.Status?.Equals("Confirmed", StringComparison.OrdinalIgnoreCase) ?? false))
+                                                {
+                                                    <a href="@Url.Action("CaptureResult", "Results", new { enrolmentId = enrolment.EnrolmentID })" 
+                                                       class="btn btn-sm btn-outline-success" title="Capture Result">
+                                                        <i class="fas fa-stopwatch"></i>
+                                                    </a>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @if (enrolment.Status?.Equals("Pending", StringComparison.OrdinalIgnoreCase) ?? false)
+                                                {
+                                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Cancel Enrolment">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <!-- Empty State -->
+                    <div class="text-center py-5">
+                        <div class="mb-4">
+                            <i class="fas fa-inbox" style="font-size: 4rem; color: #ccc;"></i>
+                        </div>
+                        <h3 class="text-muted mb-2">
+                            @(isOrganiser ? "No Enrolments Yet" : "No Enrolments")
+                        </h3>
+                        <p class="text-muted mb-4">
+                            @(isOrganiser 
+                                ? "No participants have enrolled in your events yet. Check back later!"
+                                : "You haven't enrolled in any events yet. Browse available events to get started!")
+                        </p>
+                        <a href="@Url.Action("Index", "Events")" class="btn btn-primary">
+                            <i class="fas fa-calendar me-2"></i>Browse Events
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Information Section -->
+    <div class="container mb-5">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold mb-3">
+                            <i class="fas fa-info-circle me-2" style="color: #667eea;"></i>
+                            @(isOrganiser ? "Enrolment Management" : "Your Enrolments")
+                        </h5>
+                        <ul class="list-unstyled">
+                            @if (isOrganiser)
+                            {
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Track all participant enrolments</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Manage bib number assignments</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Monitor enrolment statuses</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Export enrolment reports</li>
+                            }
+                            else
+                            {
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>View all your race enrolments</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Track enrolment status</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Find your bib number</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Download race instructions</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold mb-3">
+                            <i class="fas fa-question-circle me-2" style="color: #667eea;"></i>Need Help?
+                        </h5>
+                        <p class="text-muted mb-3">
+                            @(isOrganiser 
+                                ? "Have questions about managing enrolments? Check our documentation or contact support."
+                                : "Have questions about your enrolments? Check our FAQ or contact the event organizer.")
+                        </p>
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-outline-primary">
+                                <i class="fas fa-question me-2"></i>View FAQ
+                            </button>
+                            <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Home
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

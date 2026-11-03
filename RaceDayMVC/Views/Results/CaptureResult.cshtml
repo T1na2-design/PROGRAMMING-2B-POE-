@@ -1,0 +1,189 @@
+@model RaceDayMVC.ViewModels.CaptureResultViewModel
+
+@{
+    ViewData["Title"] = "Capture Result - RaceDay";
+}
+
+<div class="capture-result-page">
+    <!-- Page Header -->
+    <div class="page-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 0; margin-bottom: 40px;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-12">
+                    <a href="@Url.Action("Index", "Enrolments")" class="btn btn-link btn-light text-decoration-none mb-3">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Enrolments
+                    </a>
+                    <h1 class="display-5 fw-bold mb-2">
+                        <i class="fas fa-stopwatch me-3"></i>Capture Race Result
+                    </h1>
+                    <p class="lead mb-0 text-white-50">
+                        Enter the participant's race result information below.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Capture Result Section -->
+    <div class="container mb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Error Messages -->
+                @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Count > 0))
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <strong>Error!</strong> Please check the form for errors and try again.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <div class="card border-0 shadow-lg">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-edit me-2"></i>Race Result Data Entry
+                        </h5>
+                    </div>
+                    <div class="card-body p-5">
+                        <form method="post" asp-action="CaptureResult" asp-controller="Results">
+                            @Html.AntiForgeryToken()
+
+                            <!-- Hidden Field for Enrolment ID -->
+                            <input type="hidden" asp-for="EnrolmentID" />
+
+                            <!-- Enrolment Information Display -->
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Enrolment ID:</strong> @Model.EnrolmentID
+                            </div>
+
+                            <!-- Finish Time -->
+                            <div class="mb-4">
+                                <label asp-for="FinishTime" class="form-label fw-bold">
+                                    <i class="fas fa-clock me-2" style="color: #667eea;"></i>Finish Time
+                                </label>
+                                <div class="input-group">
+                                    <input type="time" asp-for="FinishTime" class="form-control form-control-lg" placeholder="HH:MM:SS" aria-describedby="finishTimeHelp" />
+                                    <span class="input-group-text">HH:MM:SS</span>
+                                </div>
+                                <small id="finishTimeHelp" class="form-text text-muted d-block mt-2">
+                                    Enter the participant's finish time in HH:MM:SS format (e.g., 01:45:32).
+                                </small>
+                                <span asp-validation-for="FinishTime" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Overall Position -->
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label asp-for="OverallPosition" class="form-label fw-bold">
+                                        <i class="fas fa-medal me-2" style="color: #ffc107;"></i>Overall Position
+                                    </label>
+                                    <input type="number" asp-for="OverallPosition" class="form-control form-control-lg" placeholder="e.g., 15" min="1" aria-describedby="overallPositionHelp" />
+                                    <small id="overallPositionHelp" class="form-text text-muted d-block mt-2">
+                                        Participant's overall position among all finishers.
+                                    </small>
+                                    <span asp-validation-for="OverallPosition" class="text-danger small"></span>
+                                </div>
+
+                                <!-- Gender Position -->
+                                <div class="col-md-6 mb-4">
+                                    <label asp-for="GenderPosition" class="form-label fw-bold">
+                                        <i class="fas fa-venus-mars me-2" style="color: #667eea;"></i>Gender Position
+                                    </label>
+                                    <input type="number" asp-for="GenderPosition" class="form-control form-control-lg" placeholder="e.g., 8" min="1" aria-describedby="genderPositionHelp" />
+                                    <small id="genderPositionHelp" class="form-text text-muted d-block mt-2">
+                                        Participant's position within their gender category.
+                                    </small>
+                                    <span asp-validation-for="GenderPosition" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <!-- Category Position -->
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label asp-for="CategoryPosition" class="form-label fw-bold">
+                                        <i class="fas fa-list-ol me-2" style="color: #28a745;"></i>Category Position
+                                    </label>
+                                    <input type="number" asp-for="CategoryPosition" class="form-control form-control-lg" placeholder="e.g., 3" min="1" aria-describedby="categoryPositionHelp" />
+                                    <small id="categoryPositionHelp" class="form-text text-muted d-block mt-2">
+                                        Participant's position within their race category.
+                                    </small>
+                                    <span asp-validation-for="CategoryPosition" class="text-danger small"></span>
+                                </div>
+
+                                <!-- Pace (min/km) -->
+                                <div class="col-md-6 mb-4">
+                                    <label asp-for="Pace" class="form-label fw-bold">
+                                        <i class="fas fa-tachometer-alt me-2" style="color: #dc3545;"></i>Pace (min/km)
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" asp-for="Pace" class="form-control form-control-lg" placeholder="e.g., 5.45" step="0.01" min="0" aria-describedby="paceHelp" />
+                                        <span class="input-group-text">min/km</span>
+                                    </div>
+                                    <small id="paceHelp" class="form-text text-muted d-block mt-2">
+                                        Running pace in minutes per kilometer (e.g., 5.45 for 5 min 27 sec per km).
+                                    </small>
+                                    <span asp-validation-for="Pace" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <!-- Additional Info Box -->
+                            <div class="alert alert-light border mt-4">
+                                <h6 class="fw-bold mb-2">
+                                    <i class="fas fa-lightbulb me-2" style="color: #ffc107;"></i>Tips for Accurate Data Entry
+                                </h6>
+                                <ul class="mb-0 small">
+                                    <li>Ensure finish times are recorded accurately from timing systems.</li>
+                                    <li>All position fields are required and must be positive integers.</li>
+                                    <li>Pace is automatically calculated but you can also enter it manually.</li>
+                                    <li>Double-check all values before submitting.</li>
+                                </ul>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
+                                <a href="@Url.Action("Index", "Enrolments")" class="btn btn-lg btn-outline-secondary">
+                                    <i class="fas fa-times me-2"></i>Cancel
+                                </a>
+                                <button type="submit" class="btn btn-lg btn-primary">
+                                    <i class="fas fa-save me-2"></i>Save Result
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Help Section -->
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-body">
+                        <h6 class="card-title fw-bold mb-3">
+                            <i class="fas fa-question-circle me-2" style="color: #667eea;"></i>Field Definitions
+                        </h6>
+                        <dl class="small">
+                            <dt class="fw-bold">Finish Time</dt>
+                            <dd>The time it took the participant to complete the race from start to finish.</dd>
+
+                            <dt class="fw-bold mt-2">Overall Position</dt>
+                            <dd>The participant's rank among all participants who finished the race.</dd>
+
+                            <dt class="fw-bold mt-2">Gender Position</dt>
+                            <dd>The participant's rank among all finishers of the same gender.</dd>
+
+                            <dt class="fw-bold mt-2">Category Position</dt>
+                            <dd>The participant's rank among all finishers in their selected race category.</dd>
+
+                            <dt class="fw-bold mt-2">Pace</dt>
+                            <dd>Average running speed: minutes and seconds per kilometer. Calculated as Finish Time ÷ Race Distance.</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
