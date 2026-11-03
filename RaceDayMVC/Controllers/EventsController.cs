@@ -80,6 +80,7 @@ namespace RaceDayMVC.Controllers
         {
             // Check authorization
             var userRole = HttpContext.Session.GetString("userRole");
+            var userEmail = HttpContext.Session.GetString("userEmail");
             if (string.IsNullOrEmpty(userRole) || !userRole.Equals("Organiser", StringComparison.OrdinalIgnoreCase))
             {
                 return RedirectToAction("Login", "Account");
@@ -89,10 +90,42 @@ namespace RaceDayMVC.Controllers
             {
                 try
                 {
-                    var result = await _apiService.CreateEventAsync(model);
+                    // Get auth token from session
+                    var authToken = HttpContext.Session.GetString("authToken");
 
-                    if (result)
+                    // Create the event and get the event ID
+                    var eventId = await _apiService.CreateEventAsync(model, authToken);
+
+                    if (eventId > 0)
                     {
+                        // If banner image is provided, upload it
+                        if (model.BannerImage != null && model.BannerImage.Length > 0)
+                        {
+                            try
+                            {
+                                var uploadResult = await _apiService.UploadBannerAsync(eventId, model.BannerImage, authToken);
+
+                                if (uploadResult)
+                                {
+                                    _logger.LogInformation($"Organiser {userEmail} created event {eventId} with banner image");
+                                }
+                                else
+                                {
+                                    _logger.LogWarning($"Event {eventId} created but banner upload failed");
+                                }
+                            }
+                            catch (Exception bannerEx)
+                            {
+                                _logger.LogWarning(bannerEx, $"Error uploading banner for event {eventId}");
+                                // Don't fail the event creation if banner upload fails
+                                // The event is already created successfully
+                            }
+                        }
+                        else
+                        {
+                            _logger.LogInformation($"Organiser {userEmail} created event {eventId} without banner image");
+                        }
+
                         return RedirectToAction(nameof(Index));
                     }
                     else

@@ -73,20 +73,42 @@ namespace RaceDayMVC.Controllers
                     // Call API to register user
                     var result = await _apiService.RegisterAsync(model);
 
-                    if (result)
+                    if (result.Success)
                     {
                         // Redirect to login page on successful registration
                         return RedirectToAction("Login", "Account");
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, "Registration failed. Please try again.");
+                        // Add field-specific errors to ModelState if available
+                        if (result.FieldErrors.Any())
+                        {
+                            foreach (var fieldError in result.FieldErrors)
+                            {
+                                ModelState.AddModelError(fieldError.Key, fieldError.Value);
+                            }
+                        }
+
+                        // Add general errors to ModelState
+                        if (result.GeneralErrors.Any())
+                        {
+                            foreach (var generalError in result.GeneralErrors)
+                            {
+                                ModelState.AddModelError(string.Empty, generalError);
+                            }
+                        }
+
+                        // Add the main message if no other errors were added
+                        if (!result.FieldErrors.Any() && !result.GeneralErrors.Any())
+                        {
+                            ModelState.AddModelError(string.Empty, result.Message ?? "Registration failed. Please try again.");
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error during registration");
-                    ModelState.AddModelError(string.Empty, "An error occurred during registration. Please try again.");
+                    ModelState.AddModelError(string.Empty, "An unexpected error occurred during registration. Please try again.");
                 }
             }
 

@@ -55,9 +55,9 @@ namespace RaceDayMVC.Services
         }
 
         /// <summary>
-        /// Registers a new user via the API.
+        /// Registers a new user via the API and returns detailed result information.
         /// </summary>
-        public async Task<bool> RegisterAsync(RegisterViewModel model)
+        public async Task<RegistrationResult> RegisterAsync(RegisterViewModel model)
         {
             try
             {
@@ -89,21 +89,23 @@ namespace RaceDayMVC.Services
                 if (response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"[API Success] RegisterAsync succeeded with status code: {response.StatusCode}");
+                    return RegistrationResult.SuccessResult();
                 }
                 else
                 {
                     Console.WriteLine($"[API Error] RegisterAsync failed with status code: {response.StatusCode}");
                     var errorContent = await response.Content.ReadAsStringAsync();
                     Console.WriteLine($"[API Error] Response: {errorContent}");
-                }
 
-                return response.IsSuccessStatusCode;
+                    // Parse the error response to extract detailed error messages
+                    return RegistrationResult.FromApiResponse(errorContent, (int)response.StatusCode);
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[Exception] RegisterAsync error: {ex.Message}");
                 Console.WriteLine($"[Exception] Stack trace: {ex.StackTrace}");
-                return false;
+                return RegistrationResult.FailureResult("An unexpected error occurred during registration. Please try again.");
             }
         }
 
@@ -197,14 +199,15 @@ namespace RaceDayMVC.Services
         /// <summary>
         /// Creates a new event via the API.
         /// </summary>
-        public async Task<bool> CreateEventAsync(CreateEventViewModel model)
+        /// <summary>
+        /// Creates a new event via the API.
+        /// Returns the newly created Event ID on success, or 0 if failed.
+        /// </summary>
+        public async Task<int> CreateEventAsync(CreateEventViewModel model, string? authToken = null)
         {
             try
             {
                 var client = _httpClientFactory.CreateClient();
-
-                // Get auth token from session/config
-                var authToken = ""; // In a real app, this would come from HttpContext.Session
 
                 // Create request object matching API schema
                 var eventRequest = new
@@ -241,21 +244,52 @@ namespace RaceDayMVC.Services
                 if (response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"[API Success] CreateEventAsync succeeded with status code: {response.StatusCode}");
-                    return true;
+
+                    // Try to extract the event ID from the response
+                    try
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+                        // Try to deserialize as an object with EventID/Id property
+                        using var jsonDoc = System.Text.Json.JsonDocument.Parse(responseContent);
+                        var root = jsonDoc.RootElement;
+
+                        if (root.TryGetProperty("eventId", out var eventIdElement) || 
+                            root.TryGetProperty("id", out eventIdElement))
+                        {
+                            if (eventIdElement.TryGetInt32(out int eventId))
+                            {
+                                Console.WriteLine($"[API Response] New Event ID: {eventId}");
+                                return eventId;
+                            }
+                        }
+
+                        // If we can't extract the ID, return a positive value to indicate success
+                        // (The caller will need to handle this gracefully)
+                        Console.WriteLine("[API Response] Could not extract EventID from response, returning 1");
+                        return 1;
+                    }
+                    catch (Exception parseEx)
+                    {
+                        Console.WriteLine($"[Warning] Could not parse event ID from response: {parseEx.Message}");
+                        // Return 1 to indicate success but ID couldn't be extracted
+                        return 1;
+                    }
                 }
                 else
                 {
                     Console.WriteLine($"[API Error] CreateEventAsync failed with status code: {response.StatusCode}");
                     var errorContent = await response.Content.ReadAsStringAsync();
                     Console.WriteLine($"[API Error] Response: {errorContent}");
-                    return false;
+                    return 0;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[Exception] CreateEventAsync error: {ex.Message}");
                 Console.WriteLine($"[Exception] Stack trace: {ex.StackTrace}");
-                return false;
+                return 0;
             }
         }
 
@@ -450,6 +484,64 @@ namespace RaceDayMVC.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"[Exception] CaptureResultAsync error: {ex.Message}");
+                Console.WriteLine($"[Exception] Stack trace: {ex.StackTrace}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Uploads a banner image for an event to the API.
+        /// </summary>
+        public async Task<bool> UploadBannerAsync(int eventId, IFormFile file, string? authToken = null)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                {
+                    Console.WriteLine("[Validation] UploadBannerAsync: No file provided");
+                    return false;
+                }
+
+                var client = _httpClientFactory.CreateClient();
+
+                Console.WriteLine($"[API Request] Uploading banner for event {eventId}, file: {file.FileName}");
+
+                // Create multipart form data content
+                using (var content = new MultipartFormDataContent())
+                {
+                    // Add file to the request
+                    using (var stream = file.OpenReadStream())
+                    {
+                        var fileContent = new StreamContent(stream);
+                        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType ?? "application/octet-stream");
+                        content.Add(fileContent, "file", file.FileName);
+                    }
+
+                    // Add authorization header if token exists
+                    if (!string.IsNullOrEmpty(authToken))
+                    {
+                        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {authToken}");
+                    }
+
+                    var response = await client.PostAsync($"{_apiBaseUrl}/api/events/{eventId}/upload-banner", content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine($"[API Success] UploadBannerAsync succeeded with status code: {response.StatusCode}");
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[API Error] UploadBannerAsync failed with status code: {response.StatusCode}");
+                        var errorContent = await response.Content.ReadAsStringAsync();
+                        Console.WriteLine($"[API Error] Response: {errorContent}");
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Exception] UploadBannerAsync error: {ex.Message}");
                 Console.WriteLine($"[Exception] Stack trace: {ex.StackTrace}");
                 return false;
             }
