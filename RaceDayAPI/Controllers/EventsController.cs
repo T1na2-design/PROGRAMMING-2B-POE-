@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
@@ -113,17 +112,18 @@ namespace RaceDayAPI.Controllers
         /// Organiser only: create a new event (organiser becomes owner).
         /// </summary>
         [HttpPost]
-        [Authorize(Roles = "Organiser")]
         [SwaggerOperation(Summary = "Create event (organiser only)")]
         public async Task<IActionResult> CreateEvent([FromBody] EventCreateRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var userIdClaim = HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-            if (userIdClaim == null) return Unauthorized();
-            if (!int.TryParse(userIdClaim.Value, out var userId)) return Unauthorized();
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole != "Organiser") return Forbid();
 
-            var organiser = await _db.Organisers.FirstOrDefaultAsync(o => o.UserId == userId);
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue) return Unauthorized();
+
+            var organiser = await _db.Organisers.FirstOrDefaultAsync(o => o.UserId == userId.Value);
             if (organiser == null) return Forbid();
 
             var ev = new Event
@@ -157,17 +157,18 @@ namespace RaceDayAPI.Controllers
         /// Organiser only: update own event.
         /// </summary>
         [HttpPut("{id:int}")]
-        [Authorize(Roles = "Organiser")]
         [SwaggerOperation(Summary = "Update event (organiser only, own events)")]
         public async Task<IActionResult> UpdateEvent(int id, [FromBody] EventUpdateRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var userIdClaim = HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-            if (userIdClaim == null) return Unauthorized();
-            if (!int.TryParse(userIdClaim.Value, out var userId)) return Unauthorized();
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole != "Organiser") return Forbid();
 
-            var organiser = await _db.Organisers.FirstOrDefaultAsync(o => o.UserId == userId);
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue) return Unauthorized();
+
+            var organiser = await _db.Organisers.FirstOrDefaultAsync(o => o.UserId == userId.Value);
             if (organiser == null) return Forbid();
 
             var ev = await _db.Events.FindAsync(id);
@@ -197,15 +198,16 @@ namespace RaceDayAPI.Controllers
         /// Organiser only: delete own event (cascades categories, enrolments, results).
         /// </summary>
         [HttpDelete("{id:int}")]
-        [Authorize(Roles = "Organiser")]
         [SwaggerOperation(Summary = "Delete event (organiser only, own events)")]
         public async Task<IActionResult> DeleteEvent(int id)
         {
-            var userIdClaim = HttpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-            if (userIdClaim == null) return Unauthorized();
-            if (!int.TryParse(userIdClaim.Value, out var userId)) return Unauthorized();
+            var userRole = HttpContext.Session.GetString("UserRole");
+            if (userRole != "Organiser") return Forbid();
 
-            var organiser = await _db.Organisers.FirstOrDefaultAsync(o => o.UserId == userId);
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue) return Unauthorized();
+
+            var organiser = await _db.Organisers.FirstOrDefaultAsync(o => o.UserId == userId.Value);
             if (organiser == null) return Forbid();
 
             var ev = await _db.Events.FindAsync(id);

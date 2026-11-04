@@ -56,7 +56,11 @@ namespace RaceDay.Services
             // create role-specific record
             if (request.Role == "Organiser")
             {
-                var org = new Organiser { UserId = user.Id };
+                var org = new Organiser 
+                { 
+                    UserId = user.Id,
+                    OrganisationName = $"{request.FirstName}'s Organisation"
+                };
                 _db.Organisers.Add(org);
                 await _db.SaveChangesAsync();
             }
