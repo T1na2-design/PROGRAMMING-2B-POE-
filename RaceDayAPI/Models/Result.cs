@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -24,12 +23,12 @@ namespace RaceDay.Models
 
         // Pace could be stored as string like "4:30/km" or seconds-per-unit as decimal if preferred
         [StringLength(50)]
-        public string Pace { get; set; }
+        public string? Pace { get; set; }
 
         public bool IsDisqualified { get; set; }
-        public string DisqualificationReason { get; set; }
+        public string? DisqualificationReason { get; set; }
 
-        public string ResultNotes { get; set; }
+        public string? ResultNotes { get; set; }
 
         public DateTime RecordedAt { get; set; } = DateTime.UtcNow;
 

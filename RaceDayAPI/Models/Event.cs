@@ -18,7 +18,7 @@ namespace RaceDay.Models
         [StringLength(200)]
         public string Title { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Required]
         public DateTime EventDate { get; set; }
@@ -27,16 +27,16 @@ namespace RaceDay.Models
         public TimeSpan? EventTime { get; set; }
 
         [StringLength(200)]
-        public string Venue { get; set; }
+        public string? Venue { get; set; }
 
         [StringLength(100)]
-        public string City { get; set; }
+        public string? City { get; set; }
 
         [StringLength(100)]
-        public string Province { get; set; }
+        public string? Province { get; set; }
 
         [StringLength(100)]
-        public string EventType { get; set; }
+        public string? EventType { get; set; }
 
         // CRITICAL SCHEMA FIX: Distance and DistanceUnit
         [Column(TypeName = "decimal(8,2)")]
@@ -52,11 +52,14 @@ namespace RaceDay.Models
 
         public DateTime? RegistrationCloseDate { get; set; }
 
-        public string Metadata { get; set; }
+        public string? Metadata { get; set; }
 
         // Status (e.g., Draft, Published, Cancelled)
         [StringLength(50)]
-        public string Status { get; set; }
+        public string? Status { get; set; }
+
+        // Banner image URL (stored in Azure Blob Storage)
+        public string? BannerUrl { get; set; }
 
         // Navigation
         public virtual Organiser Organiser { get; set; }

@@ -22,7 +22,7 @@ namespace RaceDay.Models
         public int CategoryId { get; set; }
 
         [StringLength(50)]
-        public string Status { get; set; } // e.g., Registered, Cancelled, Pending
+        public string? Status { get; set; } // e.g., Registered, Cancelled, Pending
 
         public DateTime EnrolmentDate { get; set; } = DateTime.UtcNow;
 
