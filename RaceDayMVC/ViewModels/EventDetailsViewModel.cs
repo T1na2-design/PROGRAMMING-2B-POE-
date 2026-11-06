@@ -14,6 +14,7 @@ namespace RaceDayMVC.ViewModels
         public string DistanceUnit { get; set; } = "km";
         public int? MaxParticipants { get; set; }
         public string Status { get; set; } = "Upcoming";
+        public string? BannerUrl { get; set; }
         public List<CategoryViewModel> Categories { get; set; } = new List<CategoryViewModel>();
     }
 }
