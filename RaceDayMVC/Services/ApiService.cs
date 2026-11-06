@@ -555,7 +555,7 @@ namespace RaceDayMVC.Services
             try
             {
                 var client = _httpClientFactory.CreateClient();
-                var response = await client.GetAsync($"{_apiBaseUrl}/api/auth/current-user");
+                var response = await client.GetAsync($"{_apiBaseUrl}/api/Events");
 
                 if (response.IsSuccessStatusCode)
                 {
