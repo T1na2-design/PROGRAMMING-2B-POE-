@@ -4,8 +4,9 @@
     ViewData["Title"] = "Register - RaceDay";
 }
 
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px 0;">
-    <div class="col-md-6">
+<div style="background-color: #f3f4f6; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 30px 0;">
+    <div style="width: 100%; max-width: 600px;">
+        <!-- Card -->
         <div class="card shadow-lg border-0 rounded-3">
             <!-- Top Racing Stripe -->
             <div style="height: 4px; background: linear-gradient(90deg, #ff6b6b 0%, #ffd93d 50%, #6bcf7f 100%);"></div>
@@ -13,10 +14,10 @@
             <div class="card-body p-5">
                 <!-- Logo/Title Section -->
                 <div class="text-center mb-4">
-                    <h2 class="fw-bold mb-2" style="color: #333;">
-                        <i class="fas fa-flag-checkered me-2" style="color: #667eea;"></i>RaceDay
+                    <h2 class="fw-bold mb-2" style="color: #111827;">
+                        <i class="fas fa-person-running me-2" style="color: #f97316;"></i>RaceDay
                     </h2>
-                    <p class="text-muted mb-0">Create your racing account</p>
+                    <p style="color: #6b7280; margin-bottom: 0;">Create your racing account</p>
                 </div>
 
                 <!-- Validation Summary -->
@@ -36,7 +37,7 @@
                                         }
                                         .validation-summary-errors li {
                                             padding: 6px 0;
-                                            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                                            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
                                         }
                                         .validation-summary-errors li:last-child {
                                             border-bottom: none;
@@ -57,10 +58,10 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label asp-for="FirstName" class="form-label fw-600" style="color: #333;">First Name</label>
+                                <label asp-for="FirstName" class="form-label fw-600" style="color: #111827;">First Name</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light border-end-0">
-                                        <i class="fas fa-user" style="color: #667eea;"></i>
+                                        <i class="fas fa-user" style="color: #f97316;"></i>
                                     </span>
                                     <input asp-for="FirstName" 
                                            type="text" 
@@ -76,10 +77,10 @@
 
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label asp-for="LastName" class="form-label fw-600" style="color: #333;">Last Name</label>
+                                <label asp-for="LastName" class="form-label fw-600" style="color: #111827;">Last Name</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light border-end-0">
-                                        <i class="fas fa-user" style="color: #667eea;"></i>
+                                        <i class="fas fa-user" style="color: #f97316;"></i>
                                     </span>
                                     <input asp-for="LastName" 
                                            type="text" 
@@ -94,10 +95,10 @@
 
                     <!-- Email -->
                     <div class="mb-3">
-                        <label asp-for="Email" class="form-label fw-600" style="color: #333;">Email Address</label>
+                        <label asp-for="Email" class="form-label fw-600" style="color: #111827;">Email Address</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-envelope" style="color: #667eea;"></i>
+                                <i class="fas fa-envelope" style="color: #f97316;"></i>
                             </span>
                             <input asp-for="Email" 
                                    type="email" 
@@ -110,10 +111,10 @@
 
                     <!-- Phone Number -->
                     <div class="mb-3">
-                        <label asp-for="PhoneNumber" class="form-label fw-600" style="color: #333;">Phone Number</label>
+                        <label asp-for="PhoneNumber" class="form-label fw-600" style="color: #111827;">Phone Number</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-phone" style="color: #667eea;"></i>
+                                <i class="fas fa-phone" style="color: #f97316;"></i>
                             </span>
                             <input asp-for="PhoneNumber" 
                                    type="tel" 
@@ -124,28 +125,12 @@
                         <span asp-validation-for="PhoneNumber" class="text-danger small d-block mt-1"></span>
                     </div>
 
-                    <!-- ID Number -->
-                    <div class="mb-3">
-                        <label asp-for="IDNumber" class="form-label fw-600" style="color: #333;">ID Number</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-id-card" style="color: #667eea;"></i>
-                            </span>
-                            <input asp-for="IDNumber" 
-                                   type="text" 
-                                   class="form-control border-start-0 ps-2" 
-                                   placeholder="e.g., 8401015801087"
-                                   autocomplete="off">
-                        </div>
-                        <span asp-validation-for="IDNumber" class="text-danger small d-block mt-1"></span>
-                    </div>
-
                     <!-- Gender -->
                     <div class="mb-3">
-                        <label asp-for="Gender" class="form-label fw-600" style="color: #333;">Gender</label>
+                        <label asp-for="Gender" class="form-label fw-600" style="color: #111827;">Gender</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-mars-and-venus" style="color: #667eea;"></i>
+                                <i class="fas fa-venus-mars" style="color: #f97316;"></i>
                             </span>
                             <select asp-for="Gender" class="form-select border-start-0 ps-2">
                                 <option value="">-- Select Gender --</option>
@@ -160,26 +145,28 @@
 
                     <!-- Date of Birth -->
                     <div class="mb-3">
-                        <label asp-for="DateOfBirth" class="form-label fw-600" style="color: #333;">Date of Birth</label>
+                        <label asp-for="DateOfBirth" class="form-label fw-600" style="color: #111827;">Date of Birth</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-calendar" style="color: #667eea;"></i>
+                                <i class="fas fa-calendar" style="color: #f97316;"></i>
                             </span>
                             <input asp-for="DateOfBirth" 
                                    type="date" 
                                    class="form-control border-start-0 ps-2"
                                    autocomplete="bday">
                         </div>
-                        <small class="text-muted d-block mt-1"><i class="fas fa-info-circle"></i> Required to verify age eligibility</small>
+                        <small style="color: #6b7280; display: block; margin-top: 0.25rem;">
+                            <i class="fas fa-info-circle"></i> Required to verify age eligibility
+                        </small>
                         <span asp-validation-for="DateOfBirth" class="text-danger small d-block mt-1"></span>
                     </div>
 
                     <!-- Role Selection -->
                     <div class="mb-3">
-                        <label asp-for="Role" class="form-label fw-600" style="color: #333;">Role</label>
+                        <label asp-for="Role" class="form-label fw-600" style="color: #111827;">Role</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-users" style="color: #667eea;"></i>
+                                <i class="fas fa-users" style="color: #f97316;"></i>
                             </span>
                             <select asp-for="Role" class="form-select border-start-0 ps-2">
                                 <option value="">-- Select your role --</option>
@@ -191,7 +178,7 @@
                                 </option>
                             </select>
                         </div>
-                        <small class="text-muted d-block mt-1">
+                        <small style="color: #6b7280; display: block; margin-top: 0.25rem;">
                             <strong>Participant:</strong> Register and participate in races • 
                             <strong>Organiser:</strong> Create and manage racing events
                         </small>
@@ -200,10 +187,10 @@
 
                     <!-- Password -->
                     <div class="mb-3">
-                        <label asp-for="Password" class="form-label fw-600" style="color: #333;">Password</label>
+                        <label asp-for="Password" class="form-label fw-600" style="color: #111827;">Password</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-lock" style="color: #667eea;"></i>
+                                <i class="fas fa-lock" style="color: #f97316;"></i>
                             </span>
                             <input asp-for="Password" 
                                    type="password" 
@@ -211,7 +198,7 @@
                                    placeholder="Minimum 8 characters"
                                    autocomplete="new-password">
                         </div>
-                        <small class="text-muted d-block mt-1">
+                        <small style="color: #6b7280; display: block; margin-top: 0.25rem;">
                             <i class="fas fa-shield-alt"></i> At least 8 characters with uppercase, lowercase, and numbers
                         </small>
                         <span asp-validation-for="Password" class="text-danger small d-block mt-1"></span>
@@ -219,10 +206,10 @@
 
                     <!-- Confirm Password -->
                     <div class="mb-4">
-                        <label asp-for="ConfirmPassword" class="form-label fw-600" style="color: #333;">Confirm Password</label>
+                        <label asp-for="ConfirmPassword" class="form-label fw-600" style="color: #111827;">Confirm Password</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-check-circle" style="color: #667eea;"></i>
+                                <i class="fas fa-check-circle" style="color: #f97316;"></i>
                             </span>
                             <input asp-for="ConfirmPassword" 
                                    type="password" 
@@ -235,15 +222,15 @@
 
                     <!-- Terms Checkbox -->
                     <div class="form-check mb-4">
-                        <input class="form-check-input" type="checkbox" id="terms" name="AgreeToTerms" required style="border-color: #667eea;">
+                        <input class="form-check-input" type="checkbox" id="terms" name="AgreeToTerms" required style="border-color: #f97316; accent-color: #f97316;">
                         <label class="form-check-label" for="terms" style="color: #666;">
-                            I agree to the <a href="#" style="color: #667eea; text-decoration: none;">Terms of Service</a> and 
-                            <a href="#" style="color: #667eea; text-decoration: none;">Privacy Policy</a>
+                            I agree to the <a href="#" style="color: #f97316; text-decoration: none;">Terms of Service</a> and 
+                            <a href="#" style="color: #f97316; text-decoration: none;">Privacy Policy</a>
                         </label>
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit" class="btn btn-primary w-100 py-2 fw-600 mb-3" style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); border: none;">
+                    <button type="submit" class="btn w-100 py-2 fw-600 mb-3" style="background-color: #f97316; color: white; border: none; transition: all 0.3s ease;">
                         <i class="fas fa-user-plus me-2"></i>Create Account
                     </button>
                 </form>
@@ -253,9 +240,9 @@
 
                 <!-- Login Link -->
                 <div class="text-center">
-                    <p class="text-muted mb-0">
+                    <p style="color: #6b7280; margin-bottom: 0;">
                         Already have an account?
-                        <a href="@Url.Action("Login", "Account")" class="fw-600" style="color: #667eea; text-decoration: none;">
+                        <a href="@Url.Action("Login", "Account")" class="fw-600" style="color: #f97316; text-decoration: none;">
                             Sign in here
                             <i class="fas fa-arrow-right ms-1"></i>
                         </a>
@@ -263,144 +250,16 @@
                 </div>
 
                 <!-- Footer Info -->
-                <div class="mt-4 pt-3 border-top text-center">
-                    <p class="text-muted small mb-0">
+                <div class="mt-4 pt-3" style="border-top: 1px solid #e5e7eb; text-align: center;">
+                    <p style="color: #6b7280; font-size: 0.9rem; margin-bottom: 0;">
                         <i class="fas fa-shield-alt me-1"></i>Your data is secure and encrypted
                     </p>
                 </div>
             </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="text-center mt-4">
-            <p class="text-white-50">
-                © 2026 RaceDay. All rights reserved.
-            </p>
         </div>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        $(function() {
-            // Initialize jQuery validation with Bootstrap styling
-            $('form').validate({
-                ignore: [],
-                errorClass: 'is-invalid',
-                validClass: 'is-valid',
-                highlight: function(element, errorClass, validClass) {
-                    $(element).removeClass(validClass).addClass(errorClass);
-                    $(element).closest('.input-group, .form-check').find('input, select, textarea').addClass(errorClass);
-                },
-                unhighlight: function(element, errorClass, validClass) {
-                    $(element).removeClass(errorClass).addClass(validClass);
-                    $(element).closest('.input-group, .form-check').find('input, select, textarea').removeClass(errorClass).addClass(validClass);
-                },
-                errorPlacement: function(error, element) {
-                    // Place error messages after the input group
-                    if (element.closest('.input-group').length) {
-                        error.insertAfter(element.closest('.input-group'));
-                    } else if (element.closest('.form-check').length) {
-                        error.insertAfter(element.closest('.form-check'));
-                    } else {
-                        error.insertAfter(element);
-                    }
-                },
-                rules: {
-                    FirstName: {
-                        required: true,
-                        minlength: 2,
-                        maxlength: 50
-                    },
-                    LastName: {
-                        required: true,
-                        minlength: 2,
-                        maxlength: 50
-                    },
-                    Email: {
-                        required: true,
-                        email: true
-                    },
-                    PhoneNumber: {
-                        required: true
-                    },
-                    IDNumber: {
-                        required: true,
-                        minlength: 8,
-                        maxlength: 13
-                    },
-                    Gender: {
-                        required: true
-                    },
-                    DateOfBirth: {
-                        required: true
-                    },
-                    Role: {
-                        required: true
-                    },
-                    Password: {
-                        required: true,
-                        minlength: 8,
-                        pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/
-                    },
-                    ConfirmPassword: {
-                        required: true,
-                        equalTo: '#Password'
-                    },
-                    AgreeToTerms: {
-                        required: true
-                    }
-                },
-                messages: {
-                    FirstName: {
-                        required: 'First name is required.',
-                        minlength: 'First name must be at least 2 characters.',
-                        maxlength: 'First name cannot exceed 50 characters.'
-                    },
-                    LastName: {
-                        required: 'Last name is required.',
-                        minlength: 'Last name must be at least 2 characters.',
-                        maxlength: 'Last name cannot exceed 50 characters.'
-                    },
-                    Email: {
-                        required: 'Email is required.',
-                        email: 'Please enter a valid email address.'
-                    },
-                    PhoneNumber: {
-                        required: 'Phone number is required.'
-                    },
-                    IDNumber: {
-                        required: 'ID number is required.',
-                        minlength: 'ID number must be at least 8 characters.',
-                        maxlength: 'ID number cannot exceed 13 characters.'
-                    },
-                    Gender: {
-                        required: 'Please select a gender.'
-                    },
-                    DateOfBirth: {
-                        required: 'Date of birth is required.'
-                    },
-                    Role: {
-                        required: 'Please select a role.'
-                    },
-                    Password: {
-                        required: 'Password is required.',
-                        minlength: 'Password must be at least 8 characters.',
-                        pattern: 'Password must contain uppercase, lowercase, and numeric characters.'
-                    },
-                    ConfirmPassword: {
-                        required: 'Please confirm your password.',
-                        equalTo: 'Passwords do not match.'
-                    },
-                    AgreeToTerms: {
-                        required: 'You must agree to the terms to continue.'
-                    }
-                }
-            });
-
-            // Prevent negative dates
-            $('#DateOfBirth').attr('max', new Date().toISOString().split('T')[0]);
-        });
-    </script>
 }
