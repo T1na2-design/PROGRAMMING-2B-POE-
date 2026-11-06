@@ -221,12 +221,89 @@ Ready to proceed with backen✅ SQL Script (.sql) present in /docs
 
 View workflow runs in the Actions tab.
 
-##Technologies Used
-SQL Server Management Studio (SSMS) -	Database development
-Lucidchart -	ERD diagram creation
-Microsoft Word -	API endpoint plan
-GitHub -	Version control
-GitHub Actions -	CI/CD workflow automation
+---
+
+## Project Screenshots
+
+### API Documentation (Swagger UI)
+![Swagger](docs/Screenshot%202026-11-06%20193518.png)
+
+### Event Registration Form
+![Event Registration](docs/Screenshot%202026-11-06%20193541.png)
+
+### Events Listing
+![Events List](docs/Screenshot%202026-11-06%20193554.png)
+
+### Event Details with Image
+![Event Details](docs/Screenshot%202026-11-06%20193830.png)
+
+### Event Creation Form
+![Event Creation](docs/Screenshot%202026-11-06%20193844.png)
+
+### Dashboard View
+![Dashboard](docs/Screenshot%202026-11-06%20193858.png)
+
+### Azure Blob Storage Integration
+![Azure Integration](docs/Screenshot%202026-11-06%20193914.png)
+
+---
+
+## Technologies Used
+
+### Backend & API
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| **.NET** | 8.0 | Backend framework |
+| **ASP.NET Core** | 8.0 | Web API & MVC framework |
+| **Entity Framework Core** | 8.0 | ORM for database access |
+| **SQL Server** | 2022+ | Relational database |
+| **Azure Blob Storage** | Latest | File/image storage |
+| **Swashbuckle.AspNetCore** | 6.5.0 | Swagger API documentation |
+| **BCrypt.Net-Next** | 4.0.2 | Password hashing |
+
+### Frontend
+| Technology | Purpose |
+|-----------|---------|
+| **ASP.NET Core MVC** | Server-side rendering |
+| **jQuery** | Form validation & interactions |
+| **Bootstrap** | Responsive UI framework |
+| **HTML5 / CSS3** | Markup & styling |
+| **Razor Views** | Dynamic templating |
+
+### Development Tools
+| Tool | Purpose |
+|------|---------|
+| **Visual Studio Community 2026** | IDE |
+| **SQL Server Management Studio (SSMS)** | Database development & management |
+| **Postman** | API testing |
+| **Git** | Version control |
+| **GitHub** | Repository hosting |
+| **GitHub Actions** | CI/CD pipeline automation |
+
+### Documentation & Design
+| Tool | Purpose |
+|------|---------|
+| **Lucidchart** | Entity Relationship Diagram (ERD) |
+| **Microsoft Word** | API Endpoint Plan documentation |
+| **Draw.io / Visio** | Architecture diagrams |
+
+### NuGet Packages
+```
+Microsoft.EntityFrameworkCore.SqlServer
+Microsoft.EntityFrameworkCore.Tools
+Microsoft.AspNetCore.OpenApi
+Swashbuckle.AspNetCore.Annotations
+BCrypt.Net-Next
+Azure.Storage.Blobs (v12.20.0)
+Azure.Identity
+System.Security.Cryptography.Pkcs
+System.Text.Json
+System.IdentityModel.Tokens.Jwt
+Microsoft.Extensions.Caching.Memory
+Microsoft.Data.SqlClient
+```
+
+---
 
 ## Author
 Name :	Ndimuhulu Matamela

@@ -546,5 +546,38 @@ namespace RaceDayMVC.Services
                 return false;
             }
         }
+
+        /// <summary>
+        /// Tests the API connection and returns a status message.
+        /// </summary>
+        public async Task<string> TestConnectionAsync()
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
+                var response = await client.GetAsync($"{_apiBaseUrl}/api/auth/current-user");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return "✅ API is connected and responding";
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    return "✅ API is responding (authentication required)";
+                }
+                else
+                {
+                    return $"⚠️ API returned status: {response.StatusCode}";
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                return $"❌ Failed to connect to API: {ex.Message}";
+            }
+            catch (Exception ex)
+            {
+                return $"❌ Error testing API connection: {ex.Message}";
+            }
+        }
     }
 }

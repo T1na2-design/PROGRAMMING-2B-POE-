@@ -108,7 +108,7 @@ namespace RaceDayMVC.Controllers
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error during registration");
-                    ModelState.AddModelError(string.Empty, "An unexpected error occurred during registration. Please try again.");
+                    ModelState.AddModelError(string.Empty, $"An unexpected error occurred during registration: {ex.Message}");
                 }
             }
 
