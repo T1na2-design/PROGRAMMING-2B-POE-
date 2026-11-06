@@ -28,17 +28,17 @@ namespace RaceDay.DTOs.Auth
         [DataType(DataType.Date)]
         public DateTime? DateOfBirth { get; set; }
 
-        public string Gender { get; set; }
+        public string? Gender { get; set; }
 
-        public string IdNumber { get; set; }
+        public string? IdNumber { get; set; }
 
-        public string EmergencyContactName { get; set; }
+        public string? EmergencyContactName { get; set; }
 
         [Phone]
-        public string EmergencyContactNumber { get; set; }
+        public string? EmergencyContactNumber { get; set; }
 
-        public string MedicalConditions { get; set; }
+        public string? MedicalConditions { get; set; }
 
-        public string ClubAffiliation { get; set; }
+        public string? ClubAffiliation { get; set; }
     }
 }

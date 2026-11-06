@@ -139,6 +139,69 @@
                         <span asp-validation-for="IDNumber" class="text-danger small d-block mt-1"></span>
                     </div>
 
+                    <!-- Emergency Contact Name -->
+                    <div class="mb-3">
+                        <label asp-for="EmergencyContactName" class="form-label fw-600" style="color: #111827;">Emergency Contact Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-user-plus" style="color: #f97316;"></i>
+                            </span>
+                            <input asp-for="EmergencyContactName" 
+                                   type="text" 
+                                   class="form-control border-start-0 ps-2" 
+                                   placeholder="Full name"
+                                   autocomplete="name">
+                        </div>
+                        <span asp-validation-for="EmergencyContactName" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <!-- Emergency Contact Number -->
+                    <div class="mb-3">
+                        <label asp-for="EmergencyContactNumber" class="form-label fw-600" style="color: #111827;">Emergency Contact Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-phone-alt" style="color: #f97316;"></i>
+                            </span>
+                            <input asp-for="EmergencyContactNumber" 
+                                   type="tel" 
+                                   class="form-control border-start-0 ps-2" 
+                                   placeholder="+27 (21) 555-0000"
+                                   autocomplete="tel">
+                        </div>
+                        <span asp-validation-for="EmergencyContactNumber" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <!-- Medical Conditions (Optional) -->
+                    <div class="mb-3">
+                        <label asp-for="MedicalConditions" class="form-label fw-600" style="color: #111827;">Medical Conditions <span style="color: #999;">(Optional)</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-heartbeat" style="color: #f97316;"></i>
+                            </span>
+                            <textarea asp-for="MedicalConditions" 
+                                      class="form-control border-start-0 ps-2" 
+                                      placeholder="Enter any relevant medical conditions or allergies"
+                                      rows="2"></textarea>
+                        </div>
+                        <span asp-validation-for="MedicalConditions" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <!-- Club Affiliation (Optional) -->
+                    <div class="mb-3">
+                        <label asp-for="ClubAffiliation" class="form-label fw-600" style="color: #111827;">Club Affiliation <span style="color: #999;">(Optional)</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="fas fa-users" style="color: #f97316;"></i>
+                            </span>
+                            <input asp-for="ClubAffiliation" 
+                                   type="text" 
+                                   class="form-control border-start-0 ps-2" 
+                                   placeholder="Running club or organization"
+                                   autocomplete="organization">
+                        </div>
+                        <span asp-validation-for="ClubAffiliation" class="text-danger small d-block mt-1"></span>
+                    </div>
+
                     <!-- Gender -->
                     <div class="mb-3">
                         <label asp-for="Gender" class="form-label fw-600" style="color: #111827;">Gender</label>

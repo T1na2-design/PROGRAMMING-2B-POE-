@@ -70,6 +70,12 @@ namespace RaceDayMVC.Controllers
             {
                 try
                 {
+                    // Set default values for optional fields
+                    if (string.IsNullOrEmpty(model.MedicalConditions)) 
+                        model.MedicalConditions = "None";
+                    if (string.IsNullOrEmpty(model.ClubAffiliation)) 
+                        model.ClubAffiliation = "None";
+
                     // Call API to register user
                     var result = await _apiService.RegisterAsync(model);
 

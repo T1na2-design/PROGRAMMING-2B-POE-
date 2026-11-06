@@ -38,22 +38,22 @@ namespace RaceDay.Models
         public DateTime? DateOfBirth { get; set; }
 
         [StringLength(50)]
-        public string Gender { get; set; }
+        public string? Gender { get; set; }
 
         [StringLength(50)]
-        public string IdNumber { get; set; }
+        public string? IdNumber { get; set; }
 
         [StringLength(200)]
-        public string EmergencyContactName { get; set; }
+        public string? EmergencyContactName { get; set; }
 
         [Phone]
         [StringLength(30)]
-        public string EmergencyContactNumber { get; set; }
+        public string? EmergencyContactNumber { get; set; }
 
-        public string MedicalConditions { get; set; }
+        public string? MedicalConditions { get; set; }
 
         [StringLength(200)]
-        public string ClubAffiliation { get; set; }
+        public string? ClubAffiliation { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

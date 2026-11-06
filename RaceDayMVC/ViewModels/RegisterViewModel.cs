@@ -43,5 +43,19 @@ namespace RaceDayMVC.ViewModels
         [Required(ErrorMessage = "Please confirm your password.")]
         [Compare("Password", ErrorMessage = "Passwords do not match.")]
         public string ConfirmPassword { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Emergency contact name is required.")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Emergency contact name must be between 2 and 100 characters.")]
+        public string EmergencyContactName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Emergency contact number is required.")]
+        [Phone(ErrorMessage = "Please enter a valid phone number.")]
+        public string EmergencyContactNumber { get; set; } = string.Empty;
+
+        [StringLength(500, ErrorMessage = "Medical conditions cannot exceed 500 characters.")]
+        public string? MedicalConditions { get; set; }
+
+        [StringLength(100, ErrorMessage = "Club affiliation cannot exceed 100 characters.")]
+        public string? ClubAffiliation { get; set; }
     }
 }

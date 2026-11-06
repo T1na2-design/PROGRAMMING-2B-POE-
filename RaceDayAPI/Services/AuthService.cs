@@ -42,8 +42,8 @@ namespace RaceDay.Services
                 DateOfBirth = request.DateOfBirth,
                 Gender = request.Gender,
                 IdNumber = request.IdNumber,
-                EmergencyContactName = request.EmergencyContactName,
-                EmergencyContactNumber = request.EmergencyContactNumber,
+                EmergencyContactName = request.EmergencyContactName ?? "None",
+                EmergencyContactNumber = request.EmergencyContactNumber ?? "None",
                 MedicalConditions = request.MedicalConditions,
                 ClubAffiliation = request.ClubAffiliation,
             };
