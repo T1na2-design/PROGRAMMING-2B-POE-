@@ -20,14 +20,14 @@ namespace RaceDayMVC.Controllers
         {
             try
             {
-                // Test API connection and store result in ViewBag
+                // Test API connection and store result in ViewData
                 var apiStatus = await _apiService.TestConnectionAsync();
-                ViewBag.ApiTest = apiStatus;
+                ViewData["ApiTest"] = apiStatus;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error testing API connection");
-                ViewBag.ApiTest = "Unable to connect to API";
+                ViewData["ApiTest"] = "Unable to connect to API";
             }
 
             return View();

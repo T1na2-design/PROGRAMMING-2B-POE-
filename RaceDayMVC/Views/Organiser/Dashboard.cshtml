@@ -1,0 +1,70 @@
+@{
+    ViewData["Title"] = "Organiser Dashboard";
+}
+
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 8px; margin-bottom: 3rem;">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h1 class="mb-2">
+                <i class="fas fa-chart-line me-2"></i>Organiser Dashboard
+            </h1>
+            <p class="lead mb-0">Manage your events and registrations</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <p style="font-size: 0.95rem; opacity: 0.9;" class="mb-0">
+                <i class="fas fa-user me-2"></i>@ViewData["UserEmail"]
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm h-100" style="border-left: 4px solid #667eea;">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-plus-circle me-2" style="color: #667eea;"></i>Create Event
+                </h5>
+                <p class="card-text text-muted">Start organizing a new race event</p>
+                <a href="@Url.Action("CreateEvent", "Organiser")" class="btn btn-sm" style="background-color: #667eea; color: white;">
+                    Create Now
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm h-100" style="border-left: 4px solid #f97316;">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-calendar-alt me-2" style="color: #f97316;"></i>My Events
+                </h5>
+                <p class="card-text text-muted">View and manage your events</p>
+                <a href="#" class="btn btn-sm" style="background-color: #f97316; color: white;">
+                    View Events
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm h-100" style="border-left: 4px solid #10b981;">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-users me-2" style="color: #10b981;"></i>Registrations
+                </h5>
+                <p class="card-text text-muted">View participant registrations</p>
+                <a href="#" class="btn btn-sm" style="background-color: #10b981; color: white;">
+                    View All
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info" role="alert" style="border-left: 4px solid #3b82f6; background-color: #f0f9ff;">
+    <h5 class="alert-heading">
+        <i class="fas fa-info-circle me-2"></i>Welcome to RaceDay!
+    </h5>
+    <p class="mb-0">This is your organiser dashboard. You can create and manage events, view registrations, and track participants.</p>
+</div>

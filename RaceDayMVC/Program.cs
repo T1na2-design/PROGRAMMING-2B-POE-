@@ -17,6 +17,16 @@ builder.Services.AddScoped<ApiService>();
 // 4. CONFIGURE HTTP CLIENT FACTORY
 builder.Services.AddHttpClient();
 
+// 5. CONFIGURE ANTIFORGERY
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = "X-CSRF-TOKEN";
+    options.Cookie.Name = ".AspNetCore.Antiforgery";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.Cookie.SameSite = SameSiteMode.Strict;
+});
+
 // Configure Session management
 builder.Services.AddSession(options =>
 {

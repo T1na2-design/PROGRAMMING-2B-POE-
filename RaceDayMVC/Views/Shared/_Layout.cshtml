@@ -32,16 +32,61 @@
                                 <i class="fas fa-flag-checkered me-1"></i>Events
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login" style="color: white; transition: color 0.3s ease;">
-                                <i class="fas fa-sign-in-alt me-1"></i>Login
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Register" style="color: white; transition: color 0.3s ease;">
-                                <i class="fas fa-user-plus me-1"></i>Register
-                            </a>
-                        </li>
+
+                        @{
+                            var userRole = Context.Session.GetString("userRole");
+                            var userEmail = Context.Session.GetString("userEmail");
+                            var isLoggedIn = !string.IsNullOrEmpty(userRole);
+                        }
+
+                        @if (isLoggedIn)
+                        {
+                            @if (userRole == "Organiser")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Organiser" asp-action="Dashboard" style="color: white; transition: color 0.3s ease;">
+                                        <i class="fas fa-chart-line me-1"></i>Organiser Dashboard
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Organiser" asp-action="CreateEvent" style="color: white; transition: color 0.3s ease;">
+                                        <i class="fas fa-plus-circle me-1"></i>Create Event
+                                    </a>
+                                </li>
+                            }
+                            else if (userRole == "Participant")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Participant" asp-action="MyRegistrations" style="color: white; transition: color 0.3s ease;">
+                                        <i class="fas fa-list me-1"></i>My Registrations
+                                    </a>
+                                </li>
+                            }
+
+                            <li class="nav-item">
+                                <span class="nav-link" style="color: #f97316; cursor: default;">
+                                    <i class="fas fa-user me-1"></i>@userEmail
+                                </span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Logout" style="color: white; transition: color 0.3s ease;">
+                                    <i class="fas fa-sign-out-alt me-1"></i>Logout
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login" style="color: white; transition: color 0.3s ease;">
+                                    <i class="fas fa-sign-in-alt me-1"></i>Login
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Register" style="color: white; transition: color 0.3s ease;">
+                                    <i class="fas fa-user-plus me-1"></i>Register
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

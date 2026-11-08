@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -79,7 +80,7 @@ namespace RaceDay.Services
             return MapToResponse(user);
         }
 
-        public async Task<UserResponse> LoginAsync(LoginRequest request)
+        public async Task<LoginResponse> LoginAsync(LoginRequest request)
         {
             var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
             if (user == null)
@@ -93,7 +94,18 @@ namespace RaceDay.Services
             http.Session.SetInt32(SessionUserId, user.Id);
             http.Session.SetString(SessionUserRole, user.Role);
 
-            return MapToResponse(user);
+            // Generate a simple token (Base64 encoded user info)
+            // In production, use JWT tokens
+            var tokenData = $"{user.Id}:{user.Email}:{DateTime.UtcNow.Ticks}";
+            var tokenBytes = Encoding.UTF8.GetBytes(tokenData);
+            var token = Convert.ToBase64String(tokenBytes);
+
+            return new LoginResponse
+            {
+                Token = token,
+                Role = user.Role,
+                User = MapToResponse(user)
+            };
         }
 
         public Task LogoutAsync()

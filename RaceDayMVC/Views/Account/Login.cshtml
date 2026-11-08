@@ -25,6 +25,8 @@
 
                 <!-- Login Form -->
                 <form method="post" action="/Account/Login" novalidate>
+                    @Html.AntiForgeryToken()
+
                     <div class="mb-3">
                         <label asp-for="Email" class="form-label fw-600" style="color: #111827;">Email Address</label>
                         <div class="input-group">

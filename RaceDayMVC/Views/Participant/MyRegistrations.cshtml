@@ -1,0 +1,60 @@
+@{
+    ViewData["Title"] = "My Registrations";
+}
+
+<div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 2rem; border-radius: 8px; margin-bottom: 3rem;">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h1 class="mb-2">
+                <i class="fas fa-list me-2"></i>My Registrations
+            </h1>
+            <p class="lead mb-0">View and manage your event registrations</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <p style="font-size: 0.95rem; opacity: 0.9;" class="mb-0">
+                <i class="fas fa-user me-2"></i>@ViewData["UserEmail"]
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info" role="alert" style="border-left: 4px solid #3b82f6; background-color: #f0f9ff;">
+    <h5 class="alert-heading">
+        <i class="fas fa-info-circle me-2"></i>No Registrations Yet
+    </h5>
+    <p class="mb-0">You haven't registered for any events yet. Visit the <a href="@Url.Action("Index", "Events")" class="alert-link">Events</a> page to find and register for upcoming races.</p>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h5 class="mb-3">
+            <i class="fas fa-calendar-alt me-2" style="color: #10b981;"></i>Upcoming Events
+        </h5>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead style="background-color: #f3f4f6;">
+                    <tr>
+                        <th>Event Name</th>
+                        <th>Date</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            <i class="fas fa-inbox me-2"></i>No registrations to display
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="@Url.Action("Index", "Events")" class="btn" style="background-color: #10b981; color: white;">
+        <i class="fas fa-search me-1"></i>Browse Events
+    </a>
+</div>

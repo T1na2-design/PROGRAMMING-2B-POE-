@@ -31,13 +31,16 @@ namespace RaceDayMVC.Controllers
                 try
                 {
                     // Call API to authenticate user
-                    var token = await _apiService.LoginAsync(model.Email, model.Password);
+                    var (token, role) = await _apiService.LoginAsync(model.Email, model.Password);
 
                     if (!string.IsNullOrEmpty(token))
                     {
-                        // Store token and user info in session
+                        // Store token, email, and role in session
                         HttpContext.Session.SetString("authToken", token);
                         HttpContext.Session.SetString("userEmail", model.Email);
+                        HttpContext.Session.SetString("userRole", role ?? "Participant");
+
+                        Console.WriteLine($"[Login Success] User logged in: {model.Email}, Role: {role}");
                         return RedirectToAction("Index", "Home");
                     }
                     else
@@ -79,36 +82,15 @@ namespace RaceDayMVC.Controllers
                     // Call API to register user
                     var result = await _apiService.RegisterAsync(model);
 
-                    if (result.Success)
+                    if (result == "Success")
                     {
                         // Redirect to login page on successful registration
                         return RedirectToAction("Login", "Account");
                     }
                     else
                     {
-                        // Add field-specific errors to ModelState if available
-                        if (result.FieldErrors.Any())
-                        {
-                            foreach (var fieldError in result.FieldErrors)
-                            {
-                                ModelState.AddModelError(fieldError.Key, fieldError.Value);
-                            }
-                        }
-
-                        // Add general errors to ModelState
-                        if (result.GeneralErrors.Any())
-                        {
-                            foreach (var generalError in result.GeneralErrors)
-                            {
-                                ModelState.AddModelError(string.Empty, generalError);
-                            }
-                        }
-
-                        // Add the main message if no other errors were added
-                        if (!result.FieldErrors.Any() && !result.GeneralErrors.Any())
-                        {
-                            ModelState.AddModelError(string.Empty, result.Message ?? "Registration failed. Please try again.");
-                        }
+                        // Show the exact API error on the screen
+                        ModelState.AddModelError("", $"Registration failed: {result}");
                     }
                 }
                 catch (Exception ex)

@@ -18,16 +18,27 @@ namespace RaceDayMVC.Services
         }
 
         /// <summary>
-        /// Authenticates a user and returns a token if successful.
+        /// Authenticates a user and returns a tuple containing token and role if successful.
+        /// Handles multiple response formats from the API, including empty responses.
         /// </summary>
-        public async Task<string?> LoginAsync(string email, string password)
+        public async Task<(string? token, string? role)> LoginAsync(string email, string password)
         {
             try
             {
                 var client = _httpClientFactory.CreateClient();
-                var loginRequest = new { email, password };
+
+                // Create request with lowercase property names to match API contract
+                var loginData = new
+                {
+                    email = email,
+                    password = password
+                };
+
+                Console.WriteLine($"[API Request] Sending login request:");
+                Console.WriteLine(JsonSerializer.Serialize(loginData));
+
                 var content = new StringContent(
-                    JsonSerializer.Serialize(loginRequest),
+                    JsonSerializer.Serialize(loginData),
                     Encoding.UTF8,
                     "application/json");
 
@@ -36,51 +47,153 @@ namespace RaceDayMVC.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonResponse = await response.Content.ReadAsStringAsync();
-                    using JsonDocument doc = JsonDocument.Parse(jsonResponse);
-                    var root = doc.RootElement;
+                    Console.WriteLine($"[API Success] LoginAsync succeeded with status code: {response.StatusCode}");
+                    Console.WriteLine($"[API Response] Raw JSON from login: '{jsonResponse}'");
+                    Console.WriteLine($"[API Response] Response length: {jsonResponse.Length} characters");
 
-                    if (root.TryGetProperty("token", out var tokenElement))
+                    if (string.IsNullOrWhiteSpace(jsonResponse))
                     {
-                        return tokenElement.GetString();
+                        Console.WriteLine($"[API Error] Empty response body - treating as success but no token found");
+                        return (null, null);
+                    }
+
+                    // Try to parse JSON, handling malformed JSON gracefully
+                    JsonDocument doc;
+                    try
+                    {
+                        doc = JsonDocument.Parse(jsonResponse);
+                    }
+                    catch (JsonException jsonEx)
+                    {
+                        Console.WriteLine($"[API Error] Failed to parse JSON response: {jsonEx.Message}");
+                        Console.WriteLine($"[API Error] Response was: {jsonResponse}");
+                        return (null, null);
+                    }
+
+                    using (doc)
+                    {
+                        var root = doc.RootElement;
+
+                        string? token = null;
+                        string? role = null;
+
+                        // Try to extract token from multiple possible locations
+                        // 1. Root level: { token: "...", role: "..." }
+                        if (root.TryGetProperty("token", out var tokenElement))
+                        {
+                            token = tokenElement.GetString();
+                            Console.WriteLine($"[API Success] Token extracted from root.token");
+                        }
+                        // 2. Nested in data: { data: { token: "...", role: "..." } }
+                        else if (root.TryGetProperty("data", out var dataElement) && dataElement.ValueKind == System.Text.Json.JsonValueKind.Object)
+                        {
+                            if (dataElement.TryGetProperty("token", out var nestedTokenElement))
+                            {
+                                token = nestedTokenElement.GetString();
+                                Console.WriteLine($"[API Success] Token extracted from data.token");
+                            }
+                        }
+                        // 3. Try case-insensitive match
+                        else
+                        {
+                            var properties = root.EnumerateObject().ToList();
+                            var tokenProp = properties.FirstOrDefault(p => p.Name.Equals("token", StringComparison.OrdinalIgnoreCase));
+                            if (tokenProp.Name != null)
+                            {
+                                token = tokenProp.Value.GetString();
+                                Console.WriteLine($"[API Success] Token extracted from case-insensitive match: {tokenProp.Name}");
+                            }
+                        }
+
+                        // Try to extract role from multiple possible locations
+                        // 1. Root level
+                        if (root.TryGetProperty("role", out var roleElement))
+                        {
+                            role = roleElement.GetString();
+                            Console.WriteLine($"[API Success] Role extracted from root.role: {role}");
+                        }
+                        // 2. Nested in data
+                        else if (root.TryGetProperty("data", out var dataElement) && dataElement.ValueKind == System.Text.Json.JsonValueKind.Object)
+                        {
+                            if (dataElement.TryGetProperty("role", out var nestedRoleElement))
+                            {
+                                role = nestedRoleElement.GetString();
+                                Console.WriteLine($"[API Success] Role extracted from data.role: {role}");
+                            }
+                        }
+                        // 3. Try case-insensitive match
+                        else
+                        {
+                            var properties = root.EnumerateObject().ToList();
+                            var roleProp = properties.FirstOrDefault(p => p.Name.Equals("role", StringComparison.OrdinalIgnoreCase));
+                            if (roleProp.Name != null)
+                            {
+                                role = roleProp.Value.GetString();
+                                Console.WriteLine($"[API Success] Role extracted from case-insensitive match: {roleProp.Name}");
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(token))
+                        {
+                            Console.WriteLine($"[API Error] No token found in response. Full response: {jsonResponse}");
+                        }
+                        if (string.IsNullOrEmpty(role))
+                        {
+                            Console.WriteLine($"[API Warning] No role found in response, defaulting to null");
+                        }
+
+                        return (token, role);
                     }
                 }
-
-                return null;
+                else
+                {
+                    Console.WriteLine($"[API Error] LoginAsync failed with status code: {response.StatusCode}");
+                    var errorDetails = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"[API Error] Response: {errorDetails}");
+                    return (null, null);
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Log exception here if logging is configured
-                return null;
+                Console.WriteLine($"[Exception] LoginAsync error: {ex.Message}");
+                Console.WriteLine($"[Exception] Stack trace: {ex.StackTrace}");
+                return (null, null);
             }
         }
 
         /// <summary>
         /// Registers a new user via the API and returns detailed result information.
         /// </summary>
-        public async Task<RegistrationResult> RegisterAsync(RegisterViewModel model)
+        public async Task<string> RegisterAsync(RegisterViewModel model)
         {
             try
             {
                 var client = _httpClientFactory.CreateClient();
-                var registerRequest = new
+
+                // Create request with proper DateTime formatting (yyyy-MM-dd)
+                var requestData = new
                 {
-                    firstName = model.FirstName,
-                    lastName = model.LastName,
-                    email = model.Email,
-                    phoneNumber = model.PhoneNumber,
-                    idNumber = model.IDNumber,
-                    gender = model.Gender,
-                    dateOfBirth = model.DateOfBirth,
-                    role = model.Role,
-                    password = model.Password,
-                    confirmPassword = model.ConfirmPassword
+                    Email = model.Email,
+                    Password = model.Password,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    PhoneNumber = model.PhoneNumber,
+                    Role = model.Role,
+                    DateOfBirth = model.DateOfBirth.ToString("yyyy-MM-dd"), // Force the correct format
+                    Gender = model.Gender,
+                    IDNumber = model.IDNumber,
+                    EmergencyContactName = model.EmergencyContactName,
+                    EmergencyContactNumber = model.EmergencyContactNumber,
+                    MedicalConditions = string.IsNullOrEmpty(model.MedicalConditions) ? "None" : model.MedicalConditions,
+                    ClubAffiliation = string.IsNullOrEmpty(model.ClubAffiliation) ? "None" : model.ClubAffiliation
                 };
 
                 Console.WriteLine($"[API Request] Sending registration request:");
-                Console.WriteLine(JsonSerializer.Serialize(registerRequest));
+                Console.WriteLine(JsonSerializer.Serialize(requestData));
 
+                var jsonContent = JsonSerializer.Serialize(requestData);
                 var content = new StringContent(
-                    JsonSerializer.Serialize(registerRequest),
+                    jsonContent,
                     Encoding.UTF8,
                     "application/json");
 
@@ -89,23 +202,21 @@ namespace RaceDayMVC.Services
                 if (response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"[API Success] RegisterAsync succeeded with status code: {response.StatusCode}");
-                    return RegistrationResult.SuccessResult();
+                    return "Success";
                 }
                 else
                 {
                     Console.WriteLine($"[API Error] RegisterAsync failed with status code: {response.StatusCode}");
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"[API Error] Response: {errorContent}");
-
-                    // Parse the error response to extract detailed error messages
-                    return RegistrationResult.FromApiResponse(errorContent, (int)response.StatusCode);
+                    var errorDetails = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"[API Error] Response: {errorDetails}");
+                    return errorDetails;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[Exception] RegisterAsync error: {ex.Message}");
                 Console.WriteLine($"[Exception] Stack trace: {ex.StackTrace}");
-                return RegistrationResult.FailureResult("An unexpected error occurred during registration. Please try again.");
+                return $"An error occurred: {ex.Message}";
             }
         }
 

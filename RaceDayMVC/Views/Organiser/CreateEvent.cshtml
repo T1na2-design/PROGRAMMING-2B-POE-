@@ -1,0 +1,109 @@
+@{
+    ViewData["Title"] = "Create Event";
+}
+
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 8px; margin-bottom: 3rem;">
+    <h1 class="mb-2">
+        <i class="fas fa-plus-circle me-2"></i>Create New Event
+    </h1>
+    <p class="lead mb-0">Organize a new race event</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card shadow-sm">
+            <div class="card-body p-5">
+                <form method="post" action="@Url.Action("CreateEvent", "Organiser")">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label for="title" class="form-label fw-600">Event Title</label>
+                        <input type="text" class="form-control" id="title" name="title" placeholder="e.g., 5K City Run 2026" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label fw-600">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" placeholder="Describe your event..." required></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="eventDate" class="form-label fw-600">Event Date</label>
+                            <input type="date" class="form-control" id="eventDate" name="eventDate" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="eventTime" class="form-label fw-600">Event Time</label>
+                            <input type="time" class="form-control" id="eventTime" name="eventTime" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="venue" class="form-label fw-600">Venue</label>
+                        <input type="text" class="form-control" id="venue" name="venue" placeholder="e.g., Central Park" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="city" class="form-label fw-600">City</label>
+                            <input type="text" class="form-control" id="city" name="city" placeholder="City" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="province" class="form-label fw-600">Province</label>
+                            <input type="text" class="form-control" id="province" name="province" placeholder="Province" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="distance" class="form-label fw-600">Distance</label>
+                            <input type="number" class="form-control" id="distance" name="distance" placeholder="5" step="0.1" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="distanceUnit" class="form-label fw-600">Unit</label>
+                            <select class="form-control" id="distanceUnit" name="distanceUnit" required>
+                                <option value="km">Kilometers (km)</option>
+                                <option value="mi">Miles (mi)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="maxParticipants" class="form-label fw-600">Max Participants</label>
+                            <input type="number" class="form-control" id="maxParticipants" name="maxParticipants" placeholder="100" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="eventType" class="form-label fw-600">Event Type</label>
+                            <select class="form-control" id="eventType" name="eventType" required>
+                                <option value="Running">Running</option>
+                                <option value="Walking">Walking</option>
+                                <option value="Cycling">Cycling</option>
+                                <option value="Mixed">Mixed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="registrationOpenDate" class="form-label fw-600">Registration Opens</label>
+                            <input type="date" class="form-control" id="registrationOpenDate" name="registrationOpenDate" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="registrationCloseDate" class="form-label fw-600">Registration Closes</label>
+                            <input type="date" class="form-control" id="registrationCloseDate" name="registrationCloseDate" required>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="@Url.Action("Dashboard", "Organiser")" class="btn btn-secondary">
+                            <i class="fas fa-times me-1"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary" style="background-color: #667eea; border-color: #667eea;">
+                            <i class="fas fa-check me-1"></i>Create Event
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
